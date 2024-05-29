@@ -1,5 +1,7 @@
 #include <WiFi.h>
 #include <HTTPClient.h>
+#include <WiFiClientSecure.h>
+#include <Arduino_JSON.h>
 #include "DHT.h"
 
 // ------------------- Wifi ------------------------- //
@@ -14,24 +16,15 @@ float hum;  // Humedad del aire DHT
 float heat; // Indice de Calor
 float moist; // Humedad del Suelo
 
+// ------------------- API's ------------------------- //
 String api = "https://pied-test.000webhostapp.com/Esp32_post.php";
+const char* servername = "pied-test.000webhostapp.com/esp-outputs-action.php?action=outputs_state&board=1";
 
-WiFiServer server(80);
+// ------------------- Variables ------------------------- //
+const long interval = 3000;
+unsigned long previousMillis = 0;
 
-// Variable to store the HTTP request
-String header;
-
-// Auxiliar variables to store the current output state
-String output27State = "on";
-
-const int output27 = 27;
-
-// Current time
-unsigned long currentTime = millis();
-// Previous time
-unsigned long previousTime = 0; 
-// Define timeout time in milliseconds (example: 2000ms = 2s)
-const long timeoutTime = 2000;
+String outputsState;
 
 // ------------------- Conexion a Wifi ------------------------- //
 void initWifi(){
@@ -53,7 +46,7 @@ void initWifi(){
     }
   }
   Serial.println("Connectado a Wifi Correctamente");
-  Serial.println(WiFi.localIP());
+  // Serial.println(WiFi.localIP());
   delay(5000);
 }
 // ------------------- Funcion para obtener las lecturas de los sensores ------------------------- //
@@ -71,9 +64,67 @@ void getDHTReads(){
   moist = analogRead(soil_moisture_pin);
 
 }
-// ------------------- Funcion post  ------------------------- //
+// ------------------- Funcion POST Bomba  ------------------------- //
+void bombaloop(){
+  unsigned long currentMillis = millis();
+  if(currentMillis - previousMillis >= interval) {
+      outputsState = httpGETRequest(serverName);
+      Serial.println(outputsState);
+      JSONVar myObject = JSON.parse(outputsState);
 
-// ------------------- Funcion post dht ------------------------- //
+      if (JSON.typeof(myObject) == "undefined") {
+        Serial.println("Parsing input failed!");
+        return;
+      }
+      Serial.print("JSON object = ");
+      Serial.println(myObject);
+    
+      JSONVar keys = myObject.keys();
+    
+      for (int i = 0; i < keys.length(); i++) {
+        JSONVar value = myObject[keys[i]];
+        // Serial.print("GPIO: ");
+        // Serial.print(keys[i]);
+        // Serial.print(" - SET to: ");
+        // Serial.println(value);
+        pinMode(atoi(keys[i]), OUTPUT);
+        digitalWrite(atoi(keys[i]), atoi(value));
+      }
+      previousMillis = currentMillis;
+    }
+  }
+}
+// ------------------- Funcion GET Bomba ------------------------- //
+String httpGETRequest(const char* serverName) {
+  WiFiClientSecure *client = new WiFiClientSecure;
+  
+  // set secure client without certificate
+  client->setInsecure();
+  HTTPClient https;
+    
+  // Your IP address with path or Domain name with URL path 
+  https.begin(*client, serverName);
+  
+  // Send HTTP POST request
+  int httpResponseCode = https.GET();
+  
+  String payload = "{}"; 
+  
+  if (httpResponseCode>0) {
+    Serial.print("HTTP Response code: ");
+    Serial.println(httpResponseCode);
+    payload = https.getString();
+  }
+  else {
+    Serial.print("Error code: ");
+    Serial.println(httpResponseCode);
+  }
+  // Free resources
+  https.end();
+
+  return payload;
+}
+// ------------------- Funcion post DHT11 ------------------------- //
 void EnvioDatos(){
   HTTPClient http;
   String datos_a_enviar = "dht_humidity=" + String(hum) + "&dht_temperature=" + String(temp) + "&dht_heat=" + String(heat) + "&soil_moisture=" + String(moist);
@@ -104,8 +155,8 @@ void setup() {
 // ------------------- Loop Function ------------------------- //
 void loop() {
   if(WiFi.status() == WL_CONNECTED){
+    bombaloop();
     getDHTReads();
-    initserver();
     EnvioDatos();
     delay(60000);
   }else {
