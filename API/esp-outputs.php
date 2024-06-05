@@ -1,13 +1,3 @@
-<!--
-  Rui Santos
-  Complete project details at https://RandomNerdTutorials.com/control-esp32-esp8266-gpios-from-anywhere/
-
-  Permission is hereby granted, free of charge, to any person obtaining a copy
-  of this software and associated documentation files.
-
-  The above copyright notice and this permission notice shall be included in all
-  copies or substantial portions of the Software.
--->
 <?php
     include_once('esp-database.php');
 
@@ -50,12 +40,12 @@
         <title>ESP Output Control</title>
     </head>
 <body>
-    <h2>ESP Output Control</h2>
+    <h2>Control de Bomba</h2>
     <?php echo $html_buttons; ?>
     <br><br>
     <?php echo $html_boards; ?>
     <br><br>
-    <div><form onsubmit="return createOutput();">
+    <!-- <div><form onsubmit="return createOutput();">
         <h3>Create New Output</h3>
         <label for="outputName">Name</label>
         <input type="text" name="name" id="outputName"><br>
@@ -70,7 +60,7 @@
         </select>
         <input type="submit" value="Create Output">
         <p><strong>Note:</strong> in some devices, you might need to refresh the page to see your newly created buttons or to remove deleted buttons.</p>
-    </form></div>
+    </form></div> -->
 
     <script>
         function updateOutput(element) {
