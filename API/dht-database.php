@@ -8,18 +8,21 @@
     $password = "s]2O79jdO$61";
    
     //--------------- TABLA DHT_DATA FUNCIONES ----------------- //
-    function createDHT($hum,$temp,$moist,$heat){
+    function postDatos($hum,$temp,$heat,$smp_a,$smp_b,$smp_c,$smp_d,$smp_e){
         global $servername, $username, $password, $dbname;
         $conn = new mysqli($servername,$username,$password, $dbname);
+
         if($conn->connect_error){
             die("Conexion a la DB Fallida" . $conn->connect_error);
         }
+
         date_default_timezone_set('america/Mexico_City');
         $posted_at = date("Y-m-d H:i:s");
 
-        $sql = "INSERT INTO dht_data(dht_humidity,dht_temperature,dht_heat,soil_moisture,posted_at) 
-        VALUES ('$hum','$temp','$heat','$moist','$posted_at')";     
-    
+        $sql = "INSERT INTO Datos(temp,hum,heat,smp_a,smp_b,smp_c,smp_d,smp_e,posted_at) 
+        VALUES('" . $temp . "','" . $hum . "','" . $heat . "','" . $smp_a . "','"
+         . $smp_b . "','" . $smp_c . "','" . $smp_d . "','" . $smp_e . "','" . $posted_at . "')";
+         $result = $conn->query($sql);
         if($result = $conn->query($sql)){
             return $result;
         }else{
@@ -28,15 +31,14 @@
         $conn->close();
     }
     
-    function getDHT($limit){
+    function getDatos($limit){
         global $servername, $username, $password, $dbname;
     
         $conn = new mysqli($servername,$username,$password, $dbname);
         if($conn->connect_error){
             die("Conexion a la DB Fallida" . $conn->connect_error);
         }
-        $sql = "SELECT dht_humidity, dht_temperature, dht_heat, soil_moisture, posted_at 
-        FROM dht_data ORDER BY posted_at DESC LIMIT '" . $limit . "'";
+        $sql = "SELECT * FROM Datos ORDER BY posted_at DESC LIMIT '" . $limit . "'";
             
         if($result = $conn->query($sql)){
             return $result;
