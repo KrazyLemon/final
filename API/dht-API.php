@@ -1,5 +1,5 @@
 <?php
-    include_once('esp-database.php');
+    include_once('dht-database.php');
     if($_SERVER[$_REQUEST_METHOD]== "POST"){
         $temperature = test_input($_POST["temperature"]);
         $humidity = test_input($_POST["humidity"]);

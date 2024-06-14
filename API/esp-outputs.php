@@ -1,3 +1,4 @@
+
 <?php
     include_once('esp-database.php');
 
@@ -40,12 +41,12 @@
         <title>ESP Output Control</title>
     </head>
 <body>
-    <h2>Control de Bomba</h2>
+    <h2>ESP Output Control</h2>
     <?php echo $html_buttons; ?>
     <br><br>
     <?php echo $html_boards; ?>
     <br><br>
-    <!-- <div><form onsubmit="return createOutput();">
+    <div><form onsubmit="return createOutput();">
         <h3>Create New Output</h3>
         <label for="outputName">Name</label>
         <input type="text" name="name" id="outputName"><br>
@@ -60,7 +61,7 @@
         </select>
         <input type="submit" value="Create Output">
         <p><strong>Note:</strong> in some devices, you might need to refresh the page to see your newly created buttons or to remove deleted buttons.</p>
-    </form></div> -->
+    </form></div>
 
     <script>
         function updateOutput(element) {

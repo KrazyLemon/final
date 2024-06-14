@@ -8,7 +8,7 @@
 const char* ssid = "207_C";
 const char* password = "ISC2024/";
 
-const char* serverName = "pied-test.000webhostapp.com/boards-outputs-API.php?action=outputs_state&board=1";
+const char* serverName = "pied-test.000webhostapp.com/esp-outputs-action.php?action=outputs_state&board=1";
 
 // ------------------- Variables ------------------------- //
 const long interval = 3000;

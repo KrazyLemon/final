@@ -3,20 +3,30 @@
 #include "DHT.h"
 
 // ------------------- Wifi ------------------------- //
-// const char* ssid = "Megacable-2FC0";
-// const char* password = "nhJn3XY4VL";
+const char* ssid = "Megacable-2FC0";
+const char* password = "nhJn3XY4VL";
 
-const char* ssid = "207_C";
-const char* password = "ISC2024/";
+//const char* ssid = "207_C";
+//const char* password = "ISC2024/";
 // ------------------- Sensores  ------------------------- //
-#define soil_moisture_pin 32
+#define smp_a 26
+#define smp_b 25
+#define smp_c 33
+
 DHT dht(4, DHT11);
 float temp; // Temperatura del DHT
 float hum;  // Humedad del aire DHT
 float heat; // Indice de Calor
-float moist; // Humedad del Suelo
+float smp_1; // ------------------------------------------------- //
+float smp_2; // -----------Sensores Humedad del Suelo ----------- //
+float smp_3; // ------------------------------------------------- //
+float moist;
+
+int rojo = 21;
+int verde = 18;
+
 // ------------------- API's ------------------------- //
-String api = "https://pied-test.000webhostapp.com/dht-API.php";
+String api = "https://pied-test.000webhostapp.com/dht-api.php";
 // ------------------- Conexion a Wifi ------------------------- //
 void initWifi(){
   WiFi.mode(WIFI_STA);
@@ -47,12 +57,21 @@ void getDHTReads(){
 
   if (isnan(hum) || isnan(temp) ) {
     Serial.println(F("Fallo de conexion con el DHT"));
+    digitalWrite(rojo, HIGH);
+    delay(3000);
     hum = 0.00;
     temp= 0.00;
     return;
   }
   heat = dht.computeHeatIndex(temp, hum, false);
-  moist = analogRead(soil_moisture_pin);
+  smp_1 = analogRead(smp_a);
+  smp_2 = analogRead(smp_b);
+  smp_3 = analogRead(smp_c);
+
+  moist = (smp_1 + smp_2 + smp_3) / 3;
+  
+  digitalWrite(verde, HIGH);
+  delay(3000);
 
 }
 
@@ -75,10 +94,16 @@ void EnvioDatos(){
     Serial.println(codigo_respuesta);
   }
   http.end();  //libero recursos
+
+  digitalWrite(verde, HIGH);
+  delay(3000);
 }
 // ------------------- Setup Function ------------------------- //
 void setup() {
   Serial.begin(115200);
+  pinMode(rojo, OUTPUT);
+  pinMode(verde, OUTPUT);
+
   initWifi();
   dht.begin();
 }
