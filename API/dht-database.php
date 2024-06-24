@@ -10,6 +10,8 @@
     //--------------- TABLA DHT_DATA FUNCIONES ----------------- //
     function postDatos($hum,$temp,$heat,$smp_a,$smp_b,$smp_c,$smp_d,$smp_e){
         global $servername, $username, $password, $dbname;
+        
+        
         $conn = new mysqli($servername,$username,$password, $dbname);
 
         if($conn->connect_error){
@@ -20,13 +22,12 @@
         $posted_at = date("Y-m-d H:i:s");
 
         $sql = "INSERT INTO Datos(temp,hum,heat,smp_a,smp_b,smp_c,smp_d,smp_e,posted_at) 
-        VALUES('" . $temp . "','" . $hum . "','" . $heat . "','" . $smp_a . "','"
-         . $smp_b . "','" . $smp_c . "','" . $smp_d . "','" . $smp_e . "','" . $posted_at . "')";
-         $result = $conn->query($sql);
-        if($result = $conn->query($sql)){
-            return $result;
+        VALUES('" . $temp . "','" . $hum . "','" . $heat . "','" . $smp_a . "','". $smp_b . "','" . $smp_c . "','" . $smp_d . "','" . $smp_e . "','" . $posted_at . "')";
+                
+        if($conn->query($sql) === TRUE){
+            return "Datos Insertados Correctamente";
         }else{
-            return false;
+            return "Error: " . $sql . "<br>" . $conn->error;
             }
         $conn->close();
     }

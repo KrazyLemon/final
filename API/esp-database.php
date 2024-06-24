@@ -22,7 +22,7 @@
         VALUES ('" . $name . "', '" . $board . "', '" . $gpio . "', '" . $state . "')";
 
        if ($conn->query($sql) === TRUE) {
-            return "New output created successfully";
+            return "Salida Creada Correctamente";
         }
         else {
             return "Error: " . $sql . "<br>" . $conn->error;
