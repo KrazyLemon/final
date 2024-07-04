@@ -14,8 +14,8 @@ const char* password = "nhJn3XY4VL";
 //Your IP address or domain name with URL path
 const char* serverName = "https://pied-test.000webhostapp.com/esp-outputs-action.php?action=outputs_state&board=1";
 
-// Update interval time set to 5 seconds
-const long interval = 5000;
+// Update interval time set to 3 seconds
+const long interval = 3000;
 unsigned long previousMillis = 0;
 
 String outputsState;

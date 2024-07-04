@@ -1,13 +1,13 @@
 <?php
      $servername = "localhost";
-     // Your Database name
+     
      $dbname = "id22193181_dht22_dev_db";
-     // Your Database user
+     
      $username = "id22193181_esp32_client";
-     // Your Database user password
+     
      $password = "s]2O79jdO$61";
 
-    function createUser($name, $email, $password) {
+    function createUser($name, $email, $password, $model) {
         global $servername, $username, $password, $dbname;
     
             // Create connection
@@ -17,17 +17,18 @@
                 die("Connection failed: " . $conn->connect_error);
             }
     
-            $sql = "INSERT INTO Users (name, email, password)
-            VALUES ('" . $name . "', '" . $email . "', '" . $password . "')";
+            $sql = "INSERT INTO Users (name, email, password,model)
+            VALUES ('" . $name . "', '" . $email . "', '" . $password . "', '" . $model . "')";
     
             if ($conn->query($sql) === TRUE) {
                 return "New user created successfully";
             }
             else {
-                return "Error: " . $sql . "<br>" . $conn->error;
+                return "Error: " . $conn->error;
             }
             $conn->close();
     }
+
     function deleteUser($id) {
         global $servername, $username, $password, $dbname;
     
@@ -48,6 +49,7 @@
             }
             $conn->close();
     }
+
     function updateUser($id, $name, $email, $password) {
         global $servername, $username, $password, $dbname;
     
@@ -58,7 +60,7 @@
                 die("Connection failed: " . $conn->connect_error);
             }
     
-            $sql = "UPDATE Users SET name='" . $name . "', email='" . $email . "', password='" . $password . "' WHERE id='". $id .  "'";
+            $sql = "UPDATE Users SET name='". $name . "', email='". $email . "', password='". $password . "', model='".$model."' WHERE id='". $id . "'";
     
             if ($conn->query($sql) === TRUE) {
                 return "User updated successfully";

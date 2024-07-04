@@ -39,7 +39,7 @@
         if($conn->connect_error){
             die("Conexion a la DB Fallida" . $conn->connect_error);
         }
-        $sql = "SELECT * FROM Datos ORDER BY posted_at DESC LIMIT '" . $limit . "'";
+        $sql = "SELECT * FROM Datos ORDER BY posted_at DESC LIMIT $limit ";
             
         if($result = $conn->query($sql)){
             return $result;
@@ -48,5 +48,22 @@
         }
         $conn->close();
     }
+
+    function getDatosbyDate($first_date , $second_date){
+        global $servername, $username, $password, $dbname;
+    
+        $conn = new mysqli($servername,$username,$password, $dbname);
+        if($conn->connect_error){
+            die("Conexion a la DB Fallida" . $conn->connect_error);
+        }
+        $sql = "SELECT * FROM Datos WHERE DATE(posted_at) BETWEEN  '$first_date' AND '$second_date' ORDER BY posted_at DESC;";
+        if($result = $conn->query($sql)){
+            return $result;
+        }else{
+            return false;
+        }
+        $conn->close();
+    }
+
         
 ?>
